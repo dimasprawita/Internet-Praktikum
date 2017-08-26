@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">locationaware</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="maps_api_key">AIzaSyD4msknaxGUuC2ZIA5AVRulS9CCK62Dspo</string>
+    <string name="markerYourPosition">Your position</string>
+    <string name="check_in_here">Check In Here</string>
+    <string name="add_comment">Add Comment</string>
+</resources>
