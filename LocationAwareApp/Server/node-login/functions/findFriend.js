@@ -13,21 +13,4 @@ exports.findFriend = name =>
 
 		.catch(err => reject({ status: 404, message: 'User Not Found !' }))
 
-		/*.then(users => {
-
-			if (users.length == 0) {
-
-				reject({ status: 404, message: 'User Not Found !' });
-
-			} else {
-
-				let user = users[0];
-				return user.deleteOne();
-			}
-		})
-
-		.then(() => resolve({ status: 201, message: 'User Deleted Sucessfully !' }))
-
-		.catch(err => reject({ status: 500, message: 'Internal Server Error !' }))*/
-
 	});

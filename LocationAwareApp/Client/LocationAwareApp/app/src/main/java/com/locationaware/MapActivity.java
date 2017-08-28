@@ -69,7 +69,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_map);
+        setContentView(R.layout.activity_map);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
@@ -141,23 +141,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         Toast.makeText(this, "Info window clicked",
                 Toast.LENGTH_SHORT).show();
 
-        Intent i = new Intent(this, PlaceDetail.class);
+        Intent i = new Intent(this, PlaceDetailActivity.class);
 
         Bundle extras = getIntent().getExtras();
         mEmail = extras.getString(Constants.EMAIL);
-        //Place place = PlaceAutocomplete.getPlace(this, i);
-
-        //i.putExtra("Place_Name", marker.getTitle());
 
         String snippet = marker.getSnippet();
         String[] split = snippet.split(" : ");
 
-        //i.putExtra("Address", split[0]);
         i.putExtra("Place_ID", split[1]);
         i.putExtra(Constants.EMAIL, mEmail);
-        //i.putExtra("Photo_Ref", split[2]);
 
-        //i.putExtra("Address", marker.getSnippet());
         startActivity(i);
 
     }
@@ -289,7 +283,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                         Double lat = response.body().getResults().get(i).getGeometry().getLocation().getLat();
                         Double lng = response.body().getResults().get(i).getGeometry().getLocation().getLng();
                         String placeName = response.body().getResults().get(i).getName();
-                        String vicinity = response.body().getResults().get(i).getVicinity();
+                        String vicinity = response.body().getResults().get(i).getAddress();
                         String placeId = response.body().getResults().get(i).getPlaceId();
                         MarkerOptions markerOptions = new MarkerOptions();
                         LatLng latLng = new LatLng(lat, lng);
@@ -303,8 +297,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                         // Adding colour to the marker
                         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                         // move map camera
-                        gMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                        gMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+                        /*gMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                        gMap.animateCamera(CameraUpdateFactory.zoomTo(11));*/
                     }
                 }
                 catch (Exception e) {

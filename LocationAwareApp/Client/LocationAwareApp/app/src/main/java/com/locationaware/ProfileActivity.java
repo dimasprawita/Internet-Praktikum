@@ -119,7 +119,7 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
     }
 
     private void findFriend(){
-        Intent i = new Intent(this,FindFriend.class);
+        Intent i = new Intent(this,FindFriendActivity.class);
         i.putExtra(Constants.TOKEN, mToken);
         i.putExtra(Constants.EMAIL,mEmail);
         startActivity(i);

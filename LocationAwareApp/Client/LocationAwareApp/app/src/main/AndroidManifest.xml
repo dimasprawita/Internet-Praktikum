@@ -55,11 +55,12 @@
             android:name=".MapActivity"
             android:theme="@style/AppTheme.Profile" />
         <activity
-            android:name=".PlaceDetail"
-            android:theme="@style/AppTheme.LoginRegister" />
+            android:name=".PlaceDetailActivity"
+            android:theme="@style/AppTheme.LoginRegister">
+
+        </activity>
         <activity
-            android:name=".FindFriend"
-            android:theme="@style/AppTheme.LoginRegister" />
+            android:name=".FindFriendActivity"/>
     </application>
 
 </manifest>

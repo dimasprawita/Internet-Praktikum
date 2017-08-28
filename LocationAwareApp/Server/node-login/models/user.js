@@ -4,6 +4,14 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
+/*const options = { 
+    personModelName:            'user',
+    friendshipModelName:        'Friendship', 
+    friendshipCollectionName:   'userRelationships',
+};
+
+const FriendsOfFriends = require('friends-of-friends')(mongoose, options);*/
+
 const userSchema = mongoose.Schema({ 
 
 	name 			: String,
@@ -15,7 +23,10 @@ const userSchema = mongoose.Schema({
 	
 });
 
+//userSchema.plugin(FriendsOfFriends.plugin,options);
+
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost:27017/node-login');
 
-module.exports = mongoose.model('user', userSchema);        
+module.exports = mongoose.model('user', userSchema);
+//module.exports = mongoose.model(options.personModelName, userSchema);        

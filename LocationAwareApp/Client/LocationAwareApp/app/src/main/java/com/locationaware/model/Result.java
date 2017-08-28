@@ -57,6 +57,12 @@ public class Result {
     @Expose
     private String website;
 
+    @SerializedName("formatted_address")
+    @Expose
+    private String address;
+
+
+
     /**
      *
      * @return
@@ -305,5 +311,13 @@ public class Result {
 
     public void setWebsite(String website) {
         this.website = website;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

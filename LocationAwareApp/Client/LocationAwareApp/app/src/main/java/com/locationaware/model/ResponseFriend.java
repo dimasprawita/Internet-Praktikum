@@ -5,9 +5,9 @@ package com.locationaware.model;
  */
 
 public class ResponseFriend {
-    private User[] friends;
+    private User friends;
 
-    public User[] getFriends() {
+    public User getFriends() {
         return friends;
     }
 }

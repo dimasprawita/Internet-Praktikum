@@ -1,12 +1,16 @@
 package com.locationaware.network;
 
 import com.locationaware.model.CheckIn;
+import com.locationaware.model.Comment;
 import com.locationaware.model.Example;
 import com.locationaware.model.ExamplePlaceDetail;
 import com.locationaware.model.Response;
 import com.locationaware.model.ResponseFriend;
 import com.locationaware.model.ResponseImg;
 import com.locationaware.model.User;
+import com.locationaware.model.UserComment;
+
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -55,6 +59,7 @@ public interface RetrofitInterface {
     Call<ResponseImg> uploadImage(@Part MultipartBody.Part image);
 
     @GET("users/{email}/search")
+    //Observable<User> getFriends(@Path("email") String userID, @Query("name") String name);
     Observable<User> getFriends(@Path("email") String userID, @Query("name") String name);
 
     @POST("users/friends/add/{email}")
@@ -68,5 +73,13 @@ public interface RetrofitInterface {
 
     @POST("places/{placeID}/checkin")
     Call<CheckIn> postcheckIn(@Path("placeID") String placeID, @Query("email") String userID);
+
+    @GET("places/{placeID}/comments")
+    Call<List<UserComment>> getPlaceComments(@Path("placeID") String placeID);
+
+    @POST("places/{placeID}/comments")
+    Call<Comment> createPlaceComments(@Path("placeID") String placeID, @Query("email") String userID, @Query("comment") String comment);
+
+
 
 }

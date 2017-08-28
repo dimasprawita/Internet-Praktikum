@@ -13,6 +13,7 @@ const findFr = require('./functions/findFriend')
 const user = require('./models/user');
 const img = require('./models/image');
 const chkIn = require('./functions/checkin');
+const commFun = require('./functions/comment')
 
 const googleMapsClient = require('@google/maps').createClient({
   key: 'AIzaSyD4msknaxGUuC2ZIA5AVRulS9CCK62Dspo'
@@ -331,6 +332,48 @@ module.exports = router => {
 			chkIn.getUserCheckIn(pid,uid)
 
 			.then(result => res.json(result))
+
+			.catch(err => res.status(err.status).json({ message: err.message }));
+		}
+	});
+
+	router.get('/places/:id/comments', (req,res) => {
+		const pid = req.params.id;
+
+		if(!pid)
+		{
+			res.status(400).json({message: 'Invalid Request !'});
+		}
+
+		else
+		{
+			commFun.getPlaceComment(pid)
+
+			.then(result => res.json(result))
+
+			.catch(err => res.status(err.status).json({ message: err.message }));
+		}
+
+	});
+
+	router.post('/places/:id/comments', (req,res) => {
+		const pid = req.params.id;
+		const uid = req.query.email;
+		const com = req.query.comment;
+
+		if (!pid || !uid || !com) {
+
+			res.status(400).json({message: 'Invalid Request !'});
+
+		} else {
+
+			commFun.postComment(pid,uid,com)
+
+			.then(result => {
+
+				res.setHeader('Location', '/places/'+pid+'/comments/'+uid);
+				res.status(result.status).json({ message: result.message })
+			})
 
 			.catch(err => res.status(err.status).json({ message: err.message }));
 		}
