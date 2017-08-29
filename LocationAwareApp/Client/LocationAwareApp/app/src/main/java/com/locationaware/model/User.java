@@ -9,6 +9,8 @@ public class User {
     private String created_at;
     private String newPassword;
     private String token;
+    private int age;
+    private String city;
 
     public void setName(String name) {
         this.name = name;
@@ -40,5 +42,21 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

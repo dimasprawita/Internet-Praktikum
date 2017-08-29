@@ -20,6 +20,7 @@ import com.locationaware.network.RetrofitInterface;
 import com.locationaware.utils.Constants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -35,13 +36,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CommentFragment extends Fragment {
 
     public static final String TAG = CommentFragment.class.getSimpleName();
-    private String venueID;
+    public static String venueID;
     private String mEmail;
+    private String mName;
 
     private EditText commentform;
     private Button postComment;
 
-    private RecyclerView recyclerView;
+    public static RecyclerView recyclerView;
 
     private String comment;
 
@@ -53,7 +55,7 @@ public class CommentFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_comment,container,false);
         getData();
         initViews(view);
-        loadPlaceComment(getArguments().getString("Place_ID"));
+        loadPlaceComment(venueID);
         return view;
     }
 
@@ -74,6 +76,7 @@ public class CommentFragment extends Fragment {
     private void getData(){
         venueID = getArguments().getString("Place_ID");
         mEmail = getArguments().getString(Constants.EMAIL);
+        mName = getArguments().getString("Username");
     }
 
     private void loadPlaceComment(String placeID){
@@ -87,14 +90,12 @@ public class CommentFragment extends Fragment {
         call.enqueue(new Callback<List<UserComment>>() {
             @Override
             public void onResponse(Call<List<UserComment>> call, Response<List<UserComment>> response) {
-                /*String venID = response.body().getVenueID();*/
-                //Log.d("Response",response.body().get(0).getComment().getComment());
+                commentList.clear();
                 for(int i = 0; i < response.body().size(); i++)
                 {
                     commentList.add(i,response.body().get(i).getComment());
-
-                    Log.d("User Comments",response.body().get(i).getComment().getComment());
                 }
+                Collections.reverse(commentList);
                 RecyclerView.Adapter adapter = new CommentAdapter(commentList);
                 recyclerView.setAdapter(adapter);
             }
@@ -115,19 +116,15 @@ public class CommentFragment extends Fragment {
                 .build();
 
         Comment newComment = new Comment();
-        newComment.setUserID(mEmail);
+        newComment.setUserID(mName);
         newComment.setComment(comment);
 
         RetrofitInterface svc = retrofit.create(RetrofitInterface.class);
-        Call<Comment> call = svc.createPlaceComments(venueID,mEmail,comment);
+        Call<Comment> call = svc.createPlaceComments(venueID,mName,comment);
         call.enqueue(new Callback<Comment>() {
             @Override
             public void onResponse(Call<Comment> call, Response<Comment> response) {
-                commentList.add(newComment);
-                RecyclerView.Adapter adapter = new CommentAdapter(commentList);
-                recyclerView.setAdapter(adapter);
                 showSnackBarMessage("You have successfully posted a comment");
-
             }
 
             @Override
@@ -135,6 +132,8 @@ public class CommentFragment extends Fragment {
                 Log.d("onFailure", t.toString());
             }
         });
+
+        loadPlaceComment(venueID);
     }
 
     private void showSnackBarMessage(String message) {

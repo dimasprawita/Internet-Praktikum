@@ -45,6 +45,7 @@ public class PlaceDetailFragment extends Fragment {
     private ImageView img;
     private String dId;
     private String mEmail;
+    private String mName;
     private int mHeight, mWidth = 0;
     private int placeCheckIn = 0;
     private int userCheckIn = 0;
@@ -69,6 +70,7 @@ public class PlaceDetailFragment extends Fragment {
 
         dId = getArguments().getString("Place_ID");
         mEmail = getArguments().getString(Constants.EMAIL);
+        mName = getArguments().getString("Username");
         googleApiClient = new GoogleApiClient
                 .Builder(getActivity())
                 .addApi(LocationServices.API)
@@ -300,6 +302,7 @@ public class PlaceDetailFragment extends Fragment {
         Bundle extras = new Bundle();
         extras.putString("Place_ID", dId);
         extras.putString(Constants.EMAIL, mEmail);
+        extras.putString("Username", mName);
         CommentFragment fragment = new CommentFragment();
         fragment.setArguments(extras);
         ft.replace(R.id.fragmentPlaceDetail,fragment,CommentFragment.TAG);

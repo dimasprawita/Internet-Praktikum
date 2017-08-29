@@ -21,14 +21,6 @@ public class FindFriendAdapter extends RecyclerView.Adapter<FindFriendAdapter.Vi
     }
 
 
-    /*private ArrayList<String> countries;
-
-    public FindFriendAdapter(ArrayList<String> countries) {
-        this.countries = countries;
-    }*/
-
-
-
     @Override
     public FindFriendAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_row, parent, false);
@@ -39,6 +31,8 @@ public class FindFriendAdapter extends RecyclerView.Adapter<FindFriendAdapter.Vi
     public void onBindViewHolder(FindFriendAdapter.ViewHolder holder, int position) {
         holder.friend_name.setText(friend.getName());
         holder.friend_mail.setText(friend.getEmail());
+        holder.friend_age.setText(friend.getAge());
+        holder.friend_city.setText(friend.getCity());
 
         /*holder.friend_name.setText(countries.get(position));
         holder.friend_mail.setText(countries.get(position));*/
@@ -50,11 +44,13 @@ public class FindFriendAdapter extends RecyclerView.Adapter<FindFriendAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView friend_name,friend_mail;
+        private TextView friend_name,friend_mail,friend_age,friend_city;
         public ViewHolder(View view) {
             super(view);
             friend_name= (TextView)view.findViewById(R.id.friend_name);
             friend_mail= (TextView)view.findViewById(R.id.friend_mail);
+            friend_age = (TextView)view.findViewById(R.id.friend_age);
+            friend_city = (TextView)view.findViewById(R.id.friend_city);
         }
     }
 }

@@ -26,12 +26,25 @@ exports.deleteComment = (venueID,userID,comment) =>
 	    const uID = userID;
 	    const com = comment;
 
-	    UserComment.find({comments:com})
+	    UserComment.find({ userID : uID }).where('comments').equals(com)
 
-	    .then(() => resolve({ status: 201, message: 'Comment Deleted Sucessfully !' }))
+	    .then(results => {
+	    	let user = results[0];
+	    	
+	    	new Promise((resolve,reject) => {
+	    		PlaceComment.find({comments : user._id})
+	    	.then(results => {
+	    		let place = results[0];
+	    		place.remove(0)
+	    	})
+	    	});
+	    	
+	    	user.remove();
+	    	resolve(user);
+	    	//resolve({status: 200, message: 'Successfully delete a comment !'});
+	    })
 
 		.catch(err => {
-
 			if (err.code == 11000) {
 						
 				reject({ status: 409, message: 'Conflict !' });
@@ -41,8 +54,37 @@ exports.deleteComment = (venueID,userID,comment) =>
 				reject({ status: 500, message: 'Internal Server Error !' });
 			}
 		});
+	});
 
-		PlaceComment.find({})
+exports.likeComment = (venueID,userID,comment) =>
+
+	new Promise((resolve,reject) => {
+
+		const pID = venueID;
+	    const uID = userID;
+	    const com = comment;
+
+	    UserComment.find({ userID : uID }).where('comments').equals(com)
+
+	    .then(results => {
+	    	let user = results[0];
+	    	user.total_like += 1;
+	    	return user.save();
+	    })
+
+	    //.then(user => resolve({ status: 200, message: 'Successfully like a comment !' }))
+	    .then(user => resolve(user))
+
+		.catch(err => {
+			if (err.code == 11000) {
+						
+				reject({ status: 409, message: 'Conflict !' });
+
+			} else {
+
+				reject({ status: 500, message: 'Internal Server Error !' });
+			}
+		});
 	});
 
 
@@ -53,10 +95,13 @@ exports.postComment = (venueID,userID,comment) =>
 		const pID = venueID;
 	    const uID = userID;
 	    const com = comment;
+	    const like = 0;
 
 	    const uc = new UserComment({
 	    	userID			: uID,
-			comments 		: com
+			comments 		: com,
+			created_at		: new Date(),
+			total_like		: like
 	    });
 
 		const pc = new PlaceComment({
@@ -66,15 +111,6 @@ exports.postComment = (venueID,userID,comment) =>
 
 		uc.save()
 		pc.save()
-
-		/*pc.save(function(err){
-			if(err) return handleError(err);
-
-			uc.save(function(err) {
-				if(err) return handleError(err)
-			});
-
-		})*/
 
 		.then(() => resolve({ status: 201, message: 'Comment Registered Sucessfully !' }))
 

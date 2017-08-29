@@ -64,6 +64,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     private int radius = 5000;
     public static String type="";
     private String mEmail;
+    private String mName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -145,12 +146,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         Bundle extras = getIntent().getExtras();
         mEmail = extras.getString(Constants.EMAIL);
+        mName = extras.getString("Username");
 
         String snippet = marker.getSnippet();
         String[] split = snippet.split(" : ");
 
         i.putExtra("Place_ID", split[1]);
         i.putExtra(Constants.EMAIL, mEmail);
+        i.putExtra("Username",mName);
 
         startActivity(i);
 

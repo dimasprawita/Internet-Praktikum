@@ -70,15 +70,18 @@ module.exports = router => {
 
 		const name = req.body.name;
 		const email = req.body.email;
+		const age = parseInt(req.body.age);
+		const city = req.body.city;
 		const password = req.body.password;
 
-		if (!name || !email || !password || !name.trim() || !email.trim() || !password.trim()) {
+		if (!name || !email || !password || !name.trim() || !email.trim() || !password.trim()
+			|| !age || !city || !city.trim() ) {
 
 			res.status(400).json({message: 'Invalid Request !'});
 
 		} else {
 
-			register.registerUser(name, email, password)
+			register.registerUser(name, email, password, age, city)
 
 			.then(result => {
 
@@ -104,6 +107,36 @@ module.exports = router => {
 
 			res.status(401).json({ message: 'Invalid Token !' });
 		}
+	});
+
+	router.put('/users/:id/profile', (req,res) => {
+		
+		const id = req.params.id;
+		const name = req.body.name;
+		const age = parseInt(req.body.age);
+		const city = req.body.city;
+		
+		if(checkToken(req))
+		{			
+			if(!id || !name || !age || !city){
+
+				res.status(400).json({ message: 'Invalid Request !' });
+			}
+
+			else{
+				
+				profile.changeProfile(req.params.id, name, age, city)
+
+				.then(result => res.status(result.status).json({ message: result.message }))
+
+				.catch(err => res.status(err.status).json({ message: err.message }));
+			}
+		}
+		else
+		{
+			res.status(401).json({ message: 'Invalid Token !' });
+		}
+
 	});
 
 	router.delete('/users/:id', (req,res) => {
@@ -173,7 +206,6 @@ module.exports = router => {
 	});
 
 	router.get('/users/:id/search', (req,res) => {
-		//if(!err) {
 
 		if (checkToken(req)) {
 
@@ -190,58 +222,108 @@ module.exports = router => {
 
 			res.status(401).json({ message: 'Invalid Token !' });
 		}
-
-		/*const friend = req.query.name;
-		
-		findFr.findFriend(friend)
-
-		.then(result => res.json(result))
-
-		.catch(err => res.status(err.status).json({ message: err.message }));*/
-
-				
-		//const fn = "\'"+friend+"\'";
-		/*us.find({ name: fn }, (err, result) => {
-			if(err) {
-				res.status(500).send()
-			}
-			else{
-				rest.status(200).send(result)
-			}*/
-			/*if(!friends){
-				return res.status(404).send()
-			}
-			else{ 
-				res.status(200).send(result)
-			}
-		})*/
 	});
 
-	/*const requireLoggedIn = (req, res) => {
-		if(req.user) {
-			return
-		} else {
-			return res.status(401).send()
-		}
-	}
+	// show friends
+	/*router.get('/users/friends/:id', checkTokenNext, (req, res) => {
 
-	//todo: ensure user logged in
-	router.post('/users/friends/add/:id', requireLoggedIn, (req, res) => {
-		const userToAddId = req.params.id
-		let user = req.user
-		if(user.friends.length > 0) {
-			user.friends.push({ id: userToAddId, accepted: false })
-		} else {
-			user.friends = [{ id: userToAddId, accepted: false }]
-		}
-		user.save((err) => {
-			if(err){
-				return res.status(500).send()
+		const uID = req.params.id;
+
+		user.find({email:uID})
+
+		.then(results => resolve(results[0]._id))
+
+		.then(objID => req.objID.getFriends(function(err, friends) {
+			if (err){
+				console.log("erro : " , err)
+				return res.status(500).json({ error: err })
 			}
-			else {return res.status(200).send()
-			}
+		    console.log('friends', friends);
+		    return res.status(200).json({ friends: friends })
 		})
-	})*/
+		)
+
+		.catch(err => res.status(err.status).json({ message: err.message }));
+	});*/
+
+	// show friends
+	router.get('/users/friends/:id', checkTokenNext, (req, res) => {
+		req.user.getFriends(function(err, friends) {
+			if (err){
+				console.log("erro : " , err)
+				return res.status(500).json({ error: err })
+			}
+		    console.log('friends', friends);
+		    return res.status(200).json({friends})
+		})
+	});
+
+	// Send friend request
+	router.post('/users/:id', checkTokenNext, (req,res) => {
+		//const uid = req.params.id;
+
+		user.findOne({email : req.params.id}, function(err,result){
+
+			if (!req.params.id) {
+				res.status(400).json({message: 'Invalid Request !'});
+		} 
+		else 
+		{
+				//console.log("everything ok");
+				req.user.friendRequest(result._id, function (err, request) {
+			    if (err)
+			    	return res.status(500).json({ error: err })
+			    console.log('request', request);
+			    res.status(200).json({ request: request })				    
+				});
+		};
+			//console.log(wantedUID);
+		});
+		//console.log(wantedUID);
+		//console.log(wantedUID);
+
+
+		//const requester = req.user;
+		//console.log("everythin ok ",user);
+		
+	});
+
+	// accept friend request
+	router.post('/users/:id/requests/accept', checkTokenNext, (req, res) => {
+		const uid = req.params.id;
+		//console.log("something went ",uid);
+		req.user.acceptRequest(uid, function(err, friendship) {
+			if (err){
+				//console.log("erro : " , err)
+				return res.status(500).json({ error: err })
+			}
+		    //console.log('friendship', friendship);
+		    return res.status(200).json({ friendship: friendship })
+		})
+	})
+
+	//deny friend request
+	router.post('/users/requests/:id/reject', checkToken, (req, res) => {
+		const uid = req.params.id;
+		//console.log("something went ",uid);
+		req.user.denyRequest(uid, function(err, denied) {
+			if (err){
+				//console.log("erro : " , err)
+				return res.status(500).json({ error: err })
+			}
+		    //console.log('denied', denied);
+		    return res.status(200).json({ denied: denied })
+		})
+	})
+
+
+
+
+
+
+
+
+
 
 	router.get('/places', (req,res) => 	{
 		const t = req.query.type;
@@ -358,7 +440,7 @@ module.exports = router => {
 
 	router.post('/places/:id/comments', (req,res) => {
 		const pid = req.params.id;
-		const uid = req.query.email;
+		const uid = req.query.user;
 		const com = req.query.comment;
 
 		if (!pid || !uid || !com) {
@@ -377,6 +459,48 @@ module.exports = router => {
 
 			.catch(err => res.status(err.status).json({ message: err.message }));
 		}
+	});
+
+	router.delete('/places/:id/comments', (req,res) => {
+		const pid = req.params.id;
+		const uid = req.query.user;
+		const com = req.query.comment;
+
+		if(!pid || !uid || !com)
+		{
+			res.status(400).json({message: 'Invalid Request !'});
+		}
+
+		else
+		{
+			commFun.deleteComment(pid,uid,com)
+
+			.then(result => res.json(result))
+
+			.catch(err => res.status(err.status).json({ message: err.message }));
+		}
+
+	});
+
+	router.put('/places/:id/comments', (req,res) => {
+		const pid = req.params.id;
+		const uid = req.query.user;
+		const com = req.query.comment;
+
+		if(!pid || !uid || !com)
+		{
+			res.status(400).json({message: 'Invalid Request !'});
+		}
+
+		else
+		{
+			commFun.likeComment(pid,uid,com)
+
+			.then(result => res.json(result))
+
+			.catch(err => res.status(err.status).json({ message: err.message }));
+		}
+
 	});
 
 
@@ -441,4 +565,35 @@ module.exports = router => {
 			return false;
 		}
 	}
+
+	function checkTokenNext(req, res, next) {
+
+			const token = req.headers['x-access-token'];
+			console.log("debugging ", token);
+			if (token) {
+
+				try {
+
+	  				var decoded = jwt.verify(token, config.secret);
+	  				
+	  				// attaching user to request
+	  				user.findOne({ email: req.params.id }, function(err, user) {
+				 		if(err || !user)
+				 			return false
+				 		req.user = user
+				 		console.log(req.params.id)
+				 		console.log("before attaching ", user)
+				 		next();
+			 		})
+
+				} catch(err) {
+
+					return false;
+				}
+
+			} else {
+
+				return false;
+			}
+		}
 }

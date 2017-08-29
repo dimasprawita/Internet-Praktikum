@@ -60,7 +60,8 @@
 
         </activity>
         <activity
-            android:name=".FindFriendActivity"/>
+            android:name=".FindFriendActivity"
+            android:theme="@style/AppTheme.LoginRegister"/>
     </application>
 
 </manifest>

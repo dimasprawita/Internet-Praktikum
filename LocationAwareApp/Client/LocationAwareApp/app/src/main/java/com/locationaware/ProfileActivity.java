@@ -17,7 +17,9 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.locationaware.fragments.ChangePasswordDialog;
+import com.locationaware.fragments.ChangeProfileFragment;
 import com.locationaware.fragments.DeleteUserFragment;
+import com.locationaware.fragments.FragmentShowFriends;
 import com.locationaware.model.Response;
 import com.locationaware.model.ResponseImg;
 import com.locationaware.model.User;
@@ -42,7 +44,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class ProfileActivity extends AppCompatActivity implements ChangePasswordDialog.Listener {
+public class ProfileActivity extends AppCompatActivity implements ChangePasswordDialog.Listener, ChangeProfileFragment.Listener {
 
     public static final String TAG = ProfileActivity.class.getSimpleName();
 
@@ -51,13 +53,17 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
     private TextView mTvName;
     private TextView mTvEmail;
     private TextView mTvDate;
+    private TextView mTvAge;
+    private TextView mTvCity;
     private Button mBtChangePassword;
+    private Button mBtChangeProfile;
     private Button mBtLogout;
     private Button mBtPlaces;
     private Button mBtDelUser;
     private Button mBtChangePicture;
     private Button mBtShowPicture;
     private Button mBtFindFriend;
+    private Button mBtShowFriend;
     private String mImageUrl = "";
     private Uri uri;
 
@@ -66,6 +72,7 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
     private SharedPreferences mSharedPreferences;
     private String mToken;
     private String mEmail;
+    private String mName;
 
     private CompositeSubscription mSubscriptions;
     private static int RESULT_LOAD_IMAGE = 1;
@@ -85,7 +92,10 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         mTvName = (TextView) findViewById(R.id.tv_name);
         mTvEmail = (TextView) findViewById(R.id.tv_email);
         mTvDate = (TextView) findViewById(R.id.tv_date);
+        mTvAge= (TextView) findViewById(R.id.tv_age);
+        mTvCity= (TextView) findViewById(R.id.tv_city);
         mBtChangePassword = (Button) findViewById(R.id.btn_change_password);
+        mBtChangeProfile = (Button) findViewById(R.id.btn_change_profile);
         mBtLogout = (Button) findViewById(R.id.btn_logout);
         mProgressbar = (ProgressBar) findViewById(R.id.progress);
         mBtPlaces = (Button) findViewById(R.id.btn_location);
@@ -93,14 +103,17 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         mBtChangePicture = (Button) findViewById(R.id.button_chg_pict);
         mBtShowPicture = (Button) findViewById(R.id.button_show_pict);
         mBtFindFriend = (Button) findViewById(R.id.button_find_friend);
+        mBtShowFriend = (Button) findViewById(R.id.button_show_friends);
 
         mBtChangePassword.setOnClickListener(view -> showDialog());
+        mBtChangeProfile.setOnClickListener(view -> goToChangeProfile());
         mBtLogout.setOnClickListener(view -> logout());
         mBtPlaces.setOnClickListener(view -> showMap());
         mBtDelUser.setOnClickListener(view -> deleteUser());
         mBtChangePicture.setOnClickListener(view ->  changePicture());
         mBtShowPicture.setOnClickListener(view -> showPicture());
         mBtFindFriend.setOnClickListener(view -> findFriend());
+        mBtShowFriend.setOnClickListener(view -> goToShowFriend());
     }
 
     private void changePicture() {
@@ -124,8 +137,6 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         i.putExtra(Constants.EMAIL,mEmail);
         startActivity(i);
     }
-
-
 
     private void showPicture() {
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -167,7 +178,31 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
     private void showMap(){
         Intent i = new Intent(this, MapActivity.class);
         i.putExtra(Constants.EMAIL, mEmail);
+        i.putExtra("Username",mName);
         startActivity(i);
+    }
+
+    private void goToChangeProfile(){
+        ChangeProfileFragment fragment = new ChangeProfileFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.EMAIL,mEmail);
+        bundle.putString(Constants.TOKEN,mToken);
+        fragment.setArguments(bundle);
+
+        fragment.show(getFragmentManager(), ChangeProfileFragment.TAG);
+
+    }
+
+    private void goToShowFriend(){
+        FragmentShowFriends fragment = new FragmentShowFriends();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.EMAIL,mEmail);
+        bundle.putString(Constants.TOKEN,mToken);
+        fragment.setArguments(bundle);
+
+        fragment.show(getFragmentManager(), FragmentShowFriends.TAG);
     }
 
     private void deleteUser() {
@@ -195,6 +230,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         mTvName.setText(user.getName());
         mTvEmail.setText(user.getEmail());
         mTvDate.setText(user.getCreated_at());
+        mTvAge.setText(String.valueOf(user.getAge()));
+        mTvCity.setText(user.getCity());
+        mName = user.getName();
     }
 
     private void handleError(Throwable error) {
@@ -311,7 +349,6 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
 
                     ResponseBody errorBody = response.errorBody();
 
-                    Gson gson = new Gson();
                     Gson gs = new GsonBuilder().create();
 
                     try {
@@ -338,6 +375,11 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
     public void onPasswordChanged() {
 
         showSnackBarMessage("Password Changed Successfully !");
+    }
+
+    @Override
+    public void onProfileChanged() {
+        loadProfile();
     }
 }
 

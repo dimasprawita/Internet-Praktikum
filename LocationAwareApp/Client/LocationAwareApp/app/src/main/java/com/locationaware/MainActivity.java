@@ -1,21 +1,28 @@
 package com.locationaware;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.locationaware.fragments.LoginFragment;
 import com.locationaware.fragments.ResetPasswordDialog;
 
+/**
+ * The MainActivity class create the main activity of the whole project.
+ */
+
 public class MainActivity extends AppCompatActivity implements ResetPasswordDialog.Listener {
 
     public static final String TAG = MainActivity.class.getSimpleName();
-
     private LoginFragment mLoginFragment;
     private ResetPasswordDialog mResetPasswordDialog;
 
+    /**
+     * Create Activity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordDial
         }
     }
 
+    /**
+     * Load LoginFragment
+     */
     private void loadFragment(){
 
         if (mLoginFragment == null) {
@@ -35,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordDial
         }
         getFragmentManager().beginTransaction().replace(R.id.fragmentFrame,mLoginFragment,LoginFragment.TAG).commit();
     }
+
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -49,12 +60,22 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordDial
             mResetPasswordDialog.setToken(data);
     }
 
+
+    /**
+     * Display messag upon password reset
+     * @param message
+     */
     @Override
     public void onPasswordReset(String message) {
 
         showSnackBarMessage(message);
     }
 
+    /**
+     * create a snackbar message and display it in activity
+     * @param message
+     * the message to be displayed
+     */
     private void showSnackBarMessage(String message) {
 
         Snackbar.make(findViewById(R.id.activity_main),message,Snackbar.LENGTH_SHORT).show();

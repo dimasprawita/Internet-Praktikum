@@ -4,6 +4,7 @@ import com.locationaware.model.CheckIn;
 import com.locationaware.model.Comment;
 import com.locationaware.model.Example;
 import com.locationaware.model.ExamplePlaceDetail;
+import com.locationaware.model.Friend;
 import com.locationaware.model.Response;
 import com.locationaware.model.ResponseFriend;
 import com.locationaware.model.ResponseImg;
@@ -39,6 +40,9 @@ public interface RetrofitInterface {
     @PUT("users/{email}")
     Observable<Response> changePassword(@Path("email") String email, @Body User user);
 
+    @PUT("users/{email}/profile")
+    Observable<Response> changeProfile(@Path("email") String email, @Body User user);
+
     @POST("users/{email}/password")
     Observable<Response> resetPasswordInit(@Path("email") String email);
 
@@ -59,8 +63,10 @@ public interface RetrofitInterface {
     Call<ResponseImg> uploadImage(@Part MultipartBody.Part image);
 
     @GET("users/{email}/search")
-    //Observable<User> getFriends(@Path("email") String userID, @Query("name") String name);
     Observable<User> getFriends(@Path("email") String userID, @Query("name") String name);
+
+    @GET("users/friends/{email}")
+    Observable<Friend> getFriendList(@Path("email") String uID);
 
     @POST("users/friends/add/{email}")
     Call<ResponseFriend> addFriend(@Path("email") String friends_id);
@@ -78,8 +84,12 @@ public interface RetrofitInterface {
     Call<List<UserComment>> getPlaceComments(@Path("placeID") String placeID);
 
     @POST("places/{placeID}/comments")
-    Call<Comment> createPlaceComments(@Path("placeID") String placeID, @Query("email") String userID, @Query("comment") String comment);
+    Call<Comment> createPlaceComments(@Path("placeID") String placeID, @Query("user") String user, @Query("comment") String comment);
 
+    @PUT("places/{placeID}/comments")
+    Call<Comment> likeComment(@Path("placeID") String placeID, @Query("user") String user, @Query("comment") String comment);
 
+    @DELETE("places/{placeID}/comments")
+    Call<Comment> deleteComment(@Path("placeID") String placeID, @Query("user") String user, @Query("comment") String comment);
 
 }

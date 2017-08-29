@@ -31,22 +31,28 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.locationaware.utils.Validation.validateFields;
 
-public class ChangePasswordDialog extends DialogFragment {
+/**
+ * Created by dimasprawita on 29.08.17.
+ */
+
+public class ChangeProfileFragment extends DialogFragment {
 
     public interface Listener {
 
-        void onPasswordChanged();
+        void onProfileChanged();
     }
 
-    public static final String TAG = ChangePasswordDialog.class.getSimpleName();
+    public static final String TAG = ChangeProfileFragment.class.getSimpleName();
 
-    private EditText mEtOldPassword;
-    private EditText mEtNewPassword;
-    private Button mBtChangePassword;
+    private EditText mEtNewName;
+    private EditText mEtNewAge;
+    private EditText mEtNewCity;
+    private Button BtChangeProfile;
     private Button mBtCancel;
     private TextView mTvMessage;
-    private TextInputLayout mTiOldPassword;
-    private TextInputLayout mTiNewPassword;
+    private TextInputLayout mTiNewName;
+    private TextInputLayout mTiNewAge;
+    private TextInputLayout mTiNewCity;
     private ProgressBar mProgressBar;
 
     private CompositeSubscription mSubscriptions;
@@ -54,13 +60,12 @@ public class ChangePasswordDialog extends DialogFragment {
     private String mToken;
     private String mEmail;
 
-    private Listener mListener;
+    private Listener pListener;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.dialog_change_password,container,false);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.dialog_change_profile,container,false);
         mSubscriptions = new CompositeSubscription();
         getData();
         initViews(view);
@@ -77,74 +82,83 @@ public class ChangePasswordDialog extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mListener = (ProfileActivity)context;
+        pListener = (ProfileActivity)context;
     }
 
     private void initViews(View v) {
 
-        mEtOldPassword = (EditText) v.findViewById(R.id.et_old_password);
-        mEtNewPassword = (EditText) v.findViewById(R.id.et_new_password);
-        mTiOldPassword = (TextInputLayout) v.findViewById(R.id.ti_old_password);
-        mTiNewPassword = (TextInputLayout) v.findViewById(R.id.ti_new_password);
-        mTvMessage = (TextView) v.findViewById(R.id.tv_message);
-        mBtChangePassword = (Button) v.findViewById(R.id.btn_change_password);
-        mBtCancel = (Button) v.findViewById(R.id.btn_cancel);
-        mProgressBar = (ProgressBar) v.findViewById(R.id.progress);
+        mEtNewName = (EditText) v.findViewById(R.id.et_new_name);
+        mEtNewAge = (EditText) v.findViewById(R.id.et_new_age);
+        mEtNewCity = (EditText) v.findViewById(R.id.et_new_city);
+        mTiNewName = (TextInputLayout) v.findViewById(R.id.ti_new_name);
+        mTiNewAge= (TextInputLayout) v.findViewById(R.id.ti_new_age);
+        mTiNewCity = (TextInputLayout) v.findViewById(R.id.ti_new_city);
+        mTvMessage = (TextView) v.findViewById(R.id.tv_message_change_profile);
+        BtChangeProfile = (Button) v.findViewById(R.id.btn_change_profile_acc);
+        mBtCancel = (Button) v.findViewById(R.id.btn_cancel_change_profile);
+        mProgressBar = (ProgressBar) v.findViewById(R.id.progressChangeProfile);
 
-        mBtChangePassword.setOnClickListener(view -> changePassword());
+        BtChangeProfile.setOnClickListener(view -> changeProfile());
         mBtCancel.setOnClickListener(view -> dismiss());
     }
 
-    private void changePassword() {
-
+    private void changeProfile(){
         setError();
 
-        String oldPassword = mEtOldPassword.getText().toString();
-        String newPassword = mEtNewPassword.getText().toString();
-
+        String newName= mEtNewName.getText().toString();
+        int newAge= Integer.parseInt(mEtNewAge.getText().toString());
+        String newCity = mEtNewCity.getText().toString();
         int err = 0;
 
-        if (!validateFields(oldPassword)) {
+        if (!validateFields(newName)) {
 
             err++;
-            mTiOldPassword.setError("Password should not be empty !");
+            mTiNewName.setError("Name should not be empty !");
         }
 
-        if (!validateFields(newPassword)) {
+        if (!validateFields(String.valueOf(newAge))) {
 
             err++;
-            mTiNewPassword.setError("Password should not be empty !");
+            mTiNewAge.setError("Age should not be empty !");
+        }
+
+        if (!validateFields(newCity)) {
+
+            err++;
+            mTiNewCity.setError("City should not be empty !");
         }
 
         if (err == 0) {
-
             User user = new User();
-            user.setPassword(oldPassword);
-            user.setNewPassword(newPassword);
-            changePasswordProgress(user);
+            user.setName(newName);
+            user.setAge(newAge);
+            user.setCity(newCity);
+            changeProfileProgress(user);
             mProgressBar.setVisibility(View.VISIBLE);
 
         }
     }
 
-    private void setError() {
-
-        mTiOldPassword.setError(null);
-        mTiNewPassword.setError(null);
-    }
-
-    private void changePasswordProgress(User user) {
-
-        mSubscriptions.add(NetworkUtil.getRetrofit(mToken).changePassword(mEmail,user)
+    private void changeProfileProgress(User user)
+    {
+        mSubscriptions.add(NetworkUtil.getRetrofit(mToken).changeProfile(mEmail,user)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handleResponse,this::handleError));
     }
 
+    private void setError() {
+
+        mTiNewName.setError(null);
+        mTiNewAge.setError(null);
+        mTiNewCity.setError(null);
+    }
+
     private void handleResponse(Response response) {
 
+        //showMessage(response.getMessage());
+        pListener.onProfileChanged();
         mProgressBar.setVisibility(View.GONE);
-        mListener.onPasswordChanged();
         dismiss();
     }
 
@@ -184,3 +198,5 @@ public class ChangePasswordDialog extends DialogFragment {
         mSubscriptions.unsubscribe();
     }
 }
+
+

@@ -1,16 +1,15 @@
 'use strict';
 
 const mongoose = require('mongoose');
-
 const Schema = mongoose.Schema;
 
-/*const options = { 
-    personModelName:            'user',
-    friendshipModelName:        'Friendship', 
+const options = { 
+    personModelName:            'Player',
+    friendshipModelName:        'Friend_Relationships', 
     friendshipCollectionName:   'userRelationships',
 };
 
-const FriendsOfFriends = require('friends-of-friends')(mongoose, options);*/
+const FriendsOfFriends = require('friends-of-friends')(mongoose, options);
 
 const userSchema = mongoose.Schema({ 
 
@@ -18,12 +17,17 @@ const userSchema = mongoose.Schema({
 	email			: String, 
 	hashed_password	: String,
 	created_at		: String,
+	age				: Number,
+	city			: String,
 	temp_password	: String,
 	temp_password_time: String
 	
 });
 
-//userSchema.plugin(FriendsOfFriends.plugin,options);
+userSchema.plugin(FriendsOfFriends.plugin,options);
+
+var user = mongoose.model(options.personModelName, userSchema);
+
 
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost:27017/node-login');

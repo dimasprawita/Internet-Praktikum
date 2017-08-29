@@ -37,11 +37,15 @@ public class RegisterFragment extends Fragment {
 
     private EditText mEtName;
     private EditText mEtEmail;
+    private EditText mEtAge;
+    private EditText mEtCity;
     private EditText mEtPassword;
     private Button   mBtRegister;
     private TextView mTvLogin;
     private TextInputLayout mTiName;
     private TextInputLayout mTiEmail;
+    private TextInputLayout mTiAge;
+    private TextInputLayout mTiCity;
     private TextInputLayout mTiPassword;
     private ProgressBar mProgressbar;
 
@@ -61,11 +65,15 @@ public class RegisterFragment extends Fragment {
 
         mEtName = (EditText) v.findViewById(R.id.et_name);
         mEtEmail = (EditText) v.findViewById(R.id.et_email);
+        mEtAge = (EditText) v.findViewById(R.id.et_age);
+        mEtCity = (EditText) v.findViewById(R.id.et_city);
         mEtPassword = (EditText) v.findViewById(R.id.et_password);
         mBtRegister = (Button) v.findViewById(R.id.btn_register);
         mTvLogin = (TextView) v.findViewById(R.id.tv_login);
         mTiName = (TextInputLayout) v.findViewById(R.id.ti_name);
         mTiEmail = (TextInputLayout) v.findViewById(R.id.ti_email);
+        mTiAge= (TextInputLayout) v.findViewById(R.id.ti_age);
+        mTiCity = (TextInputLayout) v.findViewById(R.id.ti_city);
         mTiPassword = (TextInputLayout) v.findViewById(R.id.ti_password);
         mProgressbar = (ProgressBar) v.findViewById(R.id.progress);
 
@@ -79,6 +87,8 @@ public class RegisterFragment extends Fragment {
 
         String name = mEtName.getText().toString();
         String email = mEtEmail.getText().toString();
+        int age = Integer.parseInt(mEtAge.getText().toString());
+        String city = mEtCity.getText().toString();
         String password = mEtPassword.getText().toString();
 
         int err = 0;
@@ -95,6 +105,18 @@ public class RegisterFragment extends Fragment {
             mTiEmail.setError("Email should be valid !");
         }
 
+        if(!validateFields(String.valueOf(age))) {
+
+            err++;
+            mTiAge.setError("Age Should not be empty!");
+        }
+
+        if (!validateFields(city)) {
+
+            err++;
+            mTiCity.setError("City should not be empty !");
+        }
+
         if (!validateFields(password)) {
 
             err++;
@@ -106,6 +128,8 @@ public class RegisterFragment extends Fragment {
             User user = new User();
             user.setName(name);
             user.setEmail(email);
+            user.setAge(age);
+            user.setCity(city);
             user.setPassword(password);
 
             mProgressbar.setVisibility(View.VISIBLE);
