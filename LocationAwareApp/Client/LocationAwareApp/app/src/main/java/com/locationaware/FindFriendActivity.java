@@ -14,11 +14,19 @@ import com.google.gson.GsonBuilder;
 import com.locationaware.model.Response;
 import com.locationaware.model.User;
 import com.locationaware.network.NetworkUtil;
+import com.locationaware.network.RetrofitInterface;
 import com.locationaware.utils.Constants;
 
 import java.io.IOException;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.HttpException;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -30,6 +38,7 @@ import rx.subscriptions.CompositeSubscription;
 public class FindFriendActivity extends AppCompatActivity {
 
     private Button search;
+    private Button friendRequest;
     private EditText friend;
 
     private RecyclerView recyclerView;
@@ -42,6 +51,7 @@ public class FindFriendActivity extends AppCompatActivity {
     private String mToken;
     private String mEmail;
     private String f_name;
+    private String requested;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,7 +77,9 @@ public class FindFriendActivity extends AppCompatActivity {
 
         search = (Button) findViewById(R.id.btn_search);
         friend = (EditText) findViewById(R.id.type_friend);
+        friendRequest = (Button) findViewById(R.id.btn_send_req);
         search.setOnClickListener(view -> doFindFriend());
+        friendRequest.setOnClickListener(view -> doSendRequest());
     }
 
     /**
@@ -77,20 +89,64 @@ public class FindFriendActivity extends AppCompatActivity {
      */
     private void doFindFriend() {
         f_name = friend.getText().toString();
-
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).getFriends(mEmail,f_name)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handleResponse,this::handleError));
     }
 
+
+    /**
+     * Method that sends a friend request to specific user
+     * It uses user's token to ensure that the user is
+     * logged in to the app.
+     */
+    private void doSendRequest() {
+
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+        httpClient.addInterceptor(chain -> {
+
+            Request original = chain.request();
+            Request.Builder builder = original.newBuilder()
+                    .addHeader("x-access-token", mToken)
+                    .method(original.method(),original.body());
+            return  chain.proceed(builder.build());
+
+        });
+
+        RxJavaCallAdapterFactory rxAdapter = RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io());
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.BASE_URL)
+                .client(httpClient.build())
+                .addCallAdapterFactory(rxAdapter)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        RetrofitInterface svc = retrofit.create(RetrofitInterface.class);
+        Call<Response> call = svc.addFriend(mEmail,requested);
+        call.enqueue(new Callback<Response>() {
+            @Override
+            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+                showSnackBarMessage(response.message());
+            }
+
+            @Override
+            public void onFailure(Call<Response> call, Throwable t) {
+                showSnackBarMessage("Send request failed");
+            }
+        });
+
+    }
     /**
      * Method that handles the response.
      * It will pass the user to the adapter and
      * the adapter will display user's information
-     * @param user
+     * @param user user to handle
      */
     private void handleResponse(User user) {
+        requested = user.getEmail();
         friends = user;
         RecyclerView.Adapter adapter = new FindFriendAdapter(friends);
         recyclerView.setAdapter(adapter);

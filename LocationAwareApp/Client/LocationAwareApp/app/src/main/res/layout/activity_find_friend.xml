@@ -40,6 +40,15 @@
         android:layout_below="@+id/btn_search"
         android:layout_marginTop="?actionBarSize"/>
 
+    <Button
+        android:id="@+id/btn_send_req"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/card_recycler_view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="27dp"
+        android:text="Send Friend Request" />
+
     <!--<TextView
         android:id="@+id/list_users"
         android:layout_width="match_parent"

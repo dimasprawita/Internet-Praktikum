@@ -292,9 +292,9 @@ module.exports = router => {
 				//console.log("everything ok");
 				requester.friendRequest(result._id, function (err, request) {
 			    if (err)
-			    	return res.status(500).json({ error: err })
+			    	return res.status(500).json({ message: 'Request already sent' })
 			    console.log('request', request);
-			    res.status(200).json({ request: request })				    
+			    res.status(200).json({ message: 'Successfully send friend request !' })				    
 				});
 			};
 
@@ -312,18 +312,24 @@ module.exports = router => {
 		MongoClient.connect(url, function(err, db) {
   			if (err) throw err;
   			//const requester = db.collection("userRelationships").findOne({requested:requested}).requester;
-  			const requested = req.user;
-  			db.collection("userRelationships").findOne({requested:requested}, function(err,result){
-  				requested.acceptRequest(result._id, function(err, friendship) {
-				if (err){
+  			const reqreq = req.user;
+  			db.collection("userRelationships").findOne({requested:reqreq._id}, function(err,result){
+  				//console.log(result.requested);
+  				const r = result;
+
+  				user.findOne({_id : r._id}, function(err,result){
+  					reqreq.acceptRequest(result, function(err, friendship) {
+						if (err){
 					//console.log("erro : " , err)
-					res.status(500).json({ error: err })
-				}
-				    //console.log('friendship', friendship);
-				    res.status(200).json({ friendship: friendship })
-				    db.close();	
-				})
-  			})
+						return res.status(500).json({ error: err })
+					}
+				    	console.log('friendship', friendship);
+				    	res.status(200).json({ friendship: friendship })
+				    	db.close();	
+					})	
+  				})
+  				
+  			});
   		});
   	});	
 
@@ -644,7 +650,7 @@ module.exports = router => {
 	function checkTokenNext(req, res, next) {
 
 			const token = req.headers['x-access-token'];
-			console.log("debugging ", token);
+			//console.log("debugging ", token);
 			if (token) {
 
 				try {
@@ -656,8 +662,8 @@ module.exports = router => {
 				 		if(err || !user)
 				 			return false
 				 		req.user = user
-				 		console.log(req.params.id)
-				 		console.log("before attaching ", user)
+				 		//console.log(req.params.id)
+				 		//console.log("before attaching ", user)
 				 		next();
 			 		})
 

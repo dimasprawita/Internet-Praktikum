@@ -153,8 +153,8 @@ public interface RetrofitInterface {
      * @param friends_id other user's ID
      * @return
      */
-    @POST("users/friends/add/{email}")
-    Call<ResponseFriend> addFriend(@Path("email") String friends_id);
+    @POST("users/{requester}/{requested}")
+    Call<Response> addFriend(@Path("requester") String uID, @Path("requested") String requested);
 
     /**
      * Method that get the number of place's check ins
