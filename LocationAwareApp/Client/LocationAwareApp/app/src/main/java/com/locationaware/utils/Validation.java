@@ -3,6 +3,10 @@ package com.locationaware.utils;
 import android.text.TextUtils;
 import android.util.Patterns;
 
+/**
+ * Class for validate each field that
+ * a user can fill.
+ */
 public class Validation {
 
     public static boolean validateFields(String name){

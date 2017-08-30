@@ -4,6 +4,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
+ * Model for Location object. Location has latitude
+ * longitude.
  * Created by dimasprawita on 21.08.17.
  */
 
@@ -17,7 +19,7 @@ public class Location {
     private Double lng;
 
     /**
-     *
+     * Method that get the latitude
      * @return
      * The lat
      */
@@ -26,7 +28,7 @@ public class Location {
     }
 
     /**
-     *
+     * Method that set the latitude
      * @param lat
      * The lat
      */
@@ -35,7 +37,7 @@ public class Location {
     }
 
     /**
-     *
+     * Method that get the longitude
      * @return
      * The lng
      */
@@ -44,7 +46,7 @@ public class Location {
     }
 
     /**
-     *
+     * Method that set the longitude
      * @param lng
      * The lng
      */

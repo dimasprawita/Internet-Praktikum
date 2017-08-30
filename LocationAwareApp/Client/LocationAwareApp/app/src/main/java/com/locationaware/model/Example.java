@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Model for Google API json response
+ * GSON is used to deserialize the JSON response.
+ * Each element on a response is provided with
+ * getter and setter method.
  * Created by dimasprawita on 21.08.17.
  */
 
@@ -26,16 +30,15 @@ public class Example {
     private String status;
 
     /**
-     *
-     * @return
-     * The htmlAttributions
+     * Method to get the Html attributions object
+     * @return The htmlAttributions
      */
     public List<Object> getHtmlAttributions() {
         return htmlAttributions;
     }
 
     /**
-     *
+     * MEthod to set the Html Attributions
      * @param htmlAttributions
      * The html_attributions
      */
@@ -44,7 +47,7 @@ public class Example {
     }
 
     /**
-     *
+     * Method to get next page token value
      * @return
      * The nextPageToken
      */
@@ -53,7 +56,7 @@ public class Example {
     }
 
     /**
-     *
+     * Method to set next page token value
      * @param nextPageToken
      * The next_page_token
      */
@@ -62,7 +65,7 @@ public class Example {
     }
 
     /**
-     *
+     * MEthod to get the list of results of nearby search
      * @return
      * The results
      */
@@ -71,7 +74,7 @@ public class Example {
     }
 
     /**
-     *
+     * Method to set the list of results of nearby search
      * @param results
      * The results
      */
@@ -80,7 +83,7 @@ public class Example {
     }
 
     /**
-     *
+     * Method to get the status from json response
      * @return
      * The status
      */
@@ -89,7 +92,7 @@ public class Example {
     }
 
     /**
-     *
+     * Method to set the status of json response
      * @param status
      * The status
      */

@@ -2,6 +2,10 @@
 
 const CheckIn = require('../models/checkin');
 
+/**
+ * function to create check in. It will
+ * save the userID and venueID in the schema
+ */
 exports.createCheckIn = (venID, userID) => 
 
 	new Promise((resolve,reject) => {
@@ -31,6 +35,10 @@ exports.createCheckIn = (venID, userID) =>
 		});
 	});
 
+
+/**
+ * function to get place's check in. 
+ */
 exports.getCheckIn = (venID) => 
 
 	new Promise((resolve,reject) => {
@@ -44,6 +52,9 @@ exports.getCheckIn = (venID) =>
 
 	});
 
+/**
+ * function to get user check in in a place. 
+ */
 exports.getUserCheckIn = (venID,userID) =>
 	
 	new Promise((resolve,reject) => {

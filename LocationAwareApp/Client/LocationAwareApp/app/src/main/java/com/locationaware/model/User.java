@@ -1,6 +1,10 @@
 package com.locationaware.model;
 
-
+/**
+ * Model for a user. A user has name, email, password,
+ * created time, age, city, newPassword, and token. Every element
+ * is implemented with setter and getter
+ */
 public class User {
 
     private String name;

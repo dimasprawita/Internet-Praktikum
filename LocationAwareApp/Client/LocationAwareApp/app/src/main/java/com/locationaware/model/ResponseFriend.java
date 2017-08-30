@@ -1,6 +1,7 @@
 package com.locationaware.model;
 
 /**
+ * Model for the result of search user.
  * Created by dimasprawita on 23.08.17.
  */
 

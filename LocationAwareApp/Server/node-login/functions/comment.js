@@ -3,7 +3,9 @@
 const PlaceComment = require('../models/placecomment');
 const UserComment = require('../models/usercomment');
 
-
+/**
+ * function to create to get place's comment. 
+ */
 exports.getPlaceComment = (venueID) => 
 
 	new Promise((resolve,reject) => {

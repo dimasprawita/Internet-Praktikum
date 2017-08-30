@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Model for object result. This will display the result
+ * of searching nearby place and also retrieving the detail of a place
  * Created by dimasprawita on 21.08.17.
  */
 

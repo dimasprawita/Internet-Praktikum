@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Model for OpeningHours object.
+ * OpeningHours has openNow status that indicates if
+ * a place is open or closed and weekday opening hours
  * Created by dimasprawita on 21.08.17.
  */
 
@@ -19,16 +22,15 @@ public class OpeningHours {
     private List<Object> weekdayText = new ArrayList<Object>();
 
     /**
-     *
-     * @return
-     * The openNow
+     * Method that indicates if place is open or closed
+     * @return true if open and false if closed
      */
     public Boolean getOpenNow() {
         return openNow;
     }
 
     /**
-     *
+     * Method that set the opennow status
      * @param openNow
      * The open_now
      */
@@ -37,7 +39,7 @@ public class OpeningHours {
     }
 
     /**
-     *
+     * Method that get the daily opening hours
      * @return
      * The weekdayText
      */
@@ -46,7 +48,7 @@ public class OpeningHours {
     }
 
     /**
-     *
+     * Method that set daily opening hours
      * @param weekdayText
      * The weekday_text
      */

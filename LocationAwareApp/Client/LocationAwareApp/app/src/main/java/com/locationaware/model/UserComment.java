@@ -4,6 +4,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
+ * Model for a comment from user.
+ * It consists of the place ID and the comment itself
  * Created by dimasprawita on 27.08.17.
  */
 

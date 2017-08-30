@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Model for the object Photo from Google
+ * Place API json response.
  * Created by dimasprawita on 21.08.17.
  */
 
@@ -25,7 +27,7 @@ public class Photo {
     private Integer width;
 
     /**
-     *
+     * Method that gets the height of the photo
      * @return
      * The height
      */
@@ -34,7 +36,7 @@ public class Photo {
     }
 
     /**
-     *
+     * Method that set the height of the photo
      * @param height
      * The height
      */

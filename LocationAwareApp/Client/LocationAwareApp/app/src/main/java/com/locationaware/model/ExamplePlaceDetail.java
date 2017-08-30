@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Model for a place detail. Searching nearby place
+ * will return different json response with searching for
+ * place detail. New model is made here to make the json
+ * parsing easier
  * Created by dimasprawita on 24.08.17.
  */
 
@@ -26,16 +30,15 @@ public class ExamplePlaceDetail {
     private String status;
 
     /**
-     *
-     * @return
-     * The htmlAttributions
+     * Method to get the Html attributions object
+     * @return The htmlAttributions
      */
     public List<Object> getHtmlAttributions() {
         return htmlAttributions;
     }
 
     /**
-     *
+     * MEthod to set the Html Attributions
      * @param htmlAttributions
      * The html_attributions
      */
@@ -44,7 +47,7 @@ public class ExamplePlaceDetail {
     }
 
     /**
-     *
+     * Method to get next page token value
      * @return
      * The nextPageToken
      */
@@ -53,7 +56,7 @@ public class ExamplePlaceDetail {
     }
 
     /**
-     *
+     * Method to set next page token value
      * @param nextPageToken
      * The next_page_token
      */
@@ -62,7 +65,7 @@ public class ExamplePlaceDetail {
     }
 
     /**
-     *
+     * MEthod to get the list of results of nearby search
      * @return
      * The results
      */
@@ -71,7 +74,7 @@ public class ExamplePlaceDetail {
     }
 
     /**
-     *
+     * Method to set the list of results of nearby search
      * @param results
      * The results
      */
@@ -80,7 +83,7 @@ public class ExamplePlaceDetail {
     }
 
     /**
-     *
+     * Method to get the status from json response
      * @return
      * The status
      */
@@ -89,7 +92,7 @@ public class ExamplePlaceDetail {
     }
 
     /**
-     *
+     * Method to set the status of json response
      * @param status
      * The status
      */

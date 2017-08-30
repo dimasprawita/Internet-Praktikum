@@ -4,6 +4,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
+ * Model for comment. A comment has user ID,
+ * comment typed by user, created time, and total like. For
+ * each element of comment, there are setter and getter to
+ * retrieve the value of the element. To deserialize the response,
+ * we use gson annotations
  * Created by dimasprawita on 27.08.17.
  */
 
