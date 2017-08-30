@@ -73,7 +73,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             @Override
             public void onClick(View v) {
                 doDeleteComment();
-                notifyItemRemoved(position);
+                //notifyItemRemoved(position);
             }
         });
 
@@ -131,7 +131,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                     if(userCommentList.get(i).getCreatedat().matches(response.body().getCreatedat()))
                     {
                         userCommentList.remove(i);
-                        notifyDataSetChanged();
+                        //notifyDataSetChanged();
                     }
                 }
             }
