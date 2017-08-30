@@ -95,6 +95,11 @@ public class ChangePasswordDialog extends DialogFragment {
         mBtCancel.setOnClickListener(view -> dismiss());
     }
 
+    /**
+     * Method that ensures the field is not empty
+     * After all the fields are filled, it will call
+     * the change password progress method
+     */
     private void changePassword() {
 
         setError();
@@ -133,6 +138,10 @@ public class ChangePasswordDialog extends DialogFragment {
         mTiNewPassword.setError(null);
     }
 
+    /**
+     * Method that creates request to change user's password
+     * @param user user to change password
+     */
     private void changePasswordProgress(User user) {
 
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).changePassword(mEmail,user)

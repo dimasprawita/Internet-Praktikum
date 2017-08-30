@@ -102,6 +102,11 @@ public class ChangeProfileFragment extends DialogFragment {
         mBtCancel.setOnClickListener(view -> dismiss());
     }
 
+    /**
+     * Method that ensures the field is not empty
+     * After all the fields are filled, it will call
+     * the change profile progress method
+     */
     private void changeProfile(){
         setError();
 
@@ -139,6 +144,12 @@ public class ChangeProfileFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Method that creates a request to backend to change user's profile
+     * It uses user's token and email to guarantee that the current user is logged
+     * in.
+     * @param user user to change display
+     */
     private void changeProfileProgress(User user)
     {
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).changeProfile(mEmail,user)
@@ -154,6 +165,10 @@ public class ChangeProfileFragment extends DialogFragment {
         mTiNewCity.setError(null);
     }
 
+    /**
+     * Method that handles the response.
+     * @param response
+     */
     private void handleResponse(Response response) {
 
         //showMessage(response.getMessage());

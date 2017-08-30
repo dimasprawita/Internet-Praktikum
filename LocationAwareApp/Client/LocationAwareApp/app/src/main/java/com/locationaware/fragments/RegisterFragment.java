@@ -51,6 +51,13 @@ public class RegisterFragment extends Fragment {
 
     private CompositeSubscription mSubscriptions;
 
+    /**
+     * Method that create the view
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,6 +68,10 @@ public class RegisterFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Method that initialize the view
+     * @param v view to display
+     */
     private void initViews(View v) {
 
         mEtName = (EditText) v.findViewById(R.id.et_name);
@@ -81,6 +92,10 @@ public class RegisterFragment extends Fragment {
         mTvLogin.setOnClickListener(view -> goToLogin());
     }
 
+    /**
+     * Method that ensures the field filled by user is not empty
+     * IF there is no error then the method will proceed to register process
+     */
     private void register() {
 
         setError();
@@ -141,6 +156,9 @@ public class RegisterFragment extends Fragment {
         }
     }
 
+    /**
+     * Method that initialize the error for text input
+     */
     private void setError() {
 
         mTiName.setError(null);
@@ -148,6 +166,11 @@ public class RegisterFragment extends Fragment {
         mTiPassword.setError(null);
     }
 
+    /**
+     * Method that creates a request to the backend. It connects with
+     * retrofit and uses rxjava.
+     * @param user ser to register
+     */
     private void registerProcess(User user) {
 
         mSubscriptions.add(NetworkUtil.getRetrofit().register(user)
@@ -156,12 +179,23 @@ public class RegisterFragment extends Fragment {
                 .subscribe(this::handleResponse,this::handleError));
     }
 
+    /**
+     * Method that handles the response from the backend.
+     * The progress bar will disappear and the response message
+     * will appear
+     * @param response response to handle
+     */
     private void handleResponse(Response response) {
 
         mProgressbar.setVisibility(View.GONE);
         showSnackBarMessage(response.getMessage());
     }
 
+    /**
+     * Method that handle error.
+     * The error message will appear on the bottom side of the screen
+     * @param error
+     */
     private void handleError(Throwable error) {
 
         mProgressbar.setVisibility(View.GONE);
@@ -185,6 +219,11 @@ public class RegisterFragment extends Fragment {
         }
     }
 
+    /**
+     * Method that gives feedback about an operation. The feedback is shown
+     * at the bottom of the screen.
+     * @param message message to be displayed
+     */
     private void showSnackBarMessage(String message) {
 
         if (getView() != null) {
@@ -193,6 +232,9 @@ public class RegisterFragment extends Fragment {
         }
     }
 
+    /**
+     * Method that directs user to login fragment.
+     */
     private void goToLogin(){
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();

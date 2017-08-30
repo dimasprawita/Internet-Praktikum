@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+* The model for check in.
+* It will store the user id and the place id
+*/
+
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;

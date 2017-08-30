@@ -131,6 +131,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
 
     }
 
+    /**
+     * Method that directs user to find friend
+     */
     private void findFriend(){
         Intent i = new Intent(this,FindFriendActivity.class);
         i.putExtra(Constants.TOKEN, mToken);
@@ -145,6 +148,10 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
     }
 
 
+    /**
+     * Method that get user's token and email and keep it so
+     * it remains consistent
+     */
     private void initSharedPreferences() {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -154,6 +161,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         Log.d("EMAIL", mEmail);
     }
 
+    /**
+     * Method that provides logout functionality.
+     */
     private void logout() {
 
         SharedPreferences.Editor editor = mSharedPreferences.edit();
@@ -163,6 +173,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         finish();
     }
 
+    /**
+     * Method that directs user to change password
+     */
     private void showDialog(){
 
         ChangePasswordDialog fragment = new ChangePasswordDialog();
@@ -175,6 +188,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         fragment.show(getFragmentManager(), ChangePasswordDialog.TAG);
     }
 
+    /**
+     * Method that directs user to discover places nearby
+     */
     private void showMap(){
         Intent i = new Intent(this, MapActivity.class);
         i.putExtra(Constants.EMAIL, mEmail);
@@ -182,6 +198,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         startActivity(i);
     }
 
+    /**
+     * Method that directs user to change profile
+     */
     private void goToChangeProfile(){
         ChangeProfileFragment fragment = new ChangeProfileFragment();
 
@@ -194,6 +213,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
 
     }
 
+    /**
+     * Method that directs user to show friend
+     */
     private void goToShowFriend(){
         FragmentShowFriends fragment = new FragmentShowFriends();
 
@@ -205,6 +227,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         fragment.show(getFragmentManager(), FragmentShowFriends.TAG);
     }
 
+    /**
+     * Method that directs user to delete current user
+     */
     private void deleteUser() {
         DeleteUserFragment fragment = new DeleteUserFragment();
 
@@ -216,6 +241,10 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         fragment.show(getFragmentManager(), DeleteUserFragment.TAG);
     }
 
+    /**
+     * Method tat creates request to load user profile.
+     * It uses user's token and email to build the request
+     */
     private void loadProfile() {
 
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).getProfile(mEmail)
@@ -224,6 +253,12 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
                 .subscribe(this::handleResponse,this::handleError));
     }
 
+    /**
+     * Method that handle the response
+     * It will set all the attribute of the user
+     * and display it in the screen
+     * @param user
+     */
     private void handleResponse(User user) {
 
         mProgressbar.setVisibility(View.GONE);
@@ -235,6 +270,10 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         mName = user.getName();
     }
 
+    /**
+     * Method that handle the error
+     * @param error
+     */
     private void handleError(Throwable error) {
 
         mProgressbar.setVisibility(View.GONE);
@@ -370,13 +409,19 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
     }
 
 
-
+    /**
+     * Method that show the message after
+     * the user changes the password.
+     */
     @Override
     public void onPasswordChanged() {
 
         showSnackBarMessage("Password Changed Successfully !");
     }
 
+    /**
+     * Method that load the user's profile after the profile changed
+     */
     @Override
     public void onProfileChanged() {
         loadProfile();

@@ -52,7 +52,13 @@ public class LoginFragment extends Fragment {
     private SharedPreferences mSharedPreferences;
 
 
-
+    /**
+     * create the initial view
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return the created view
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,6 +69,10 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
+    /**
+     * initialize the view
+     * @param v the desired view to be initialized
+     */
     private void initViews(View v) {
 
         mEtEmail = (EditText) v.findViewById(R.id.et_email);
@@ -79,11 +89,18 @@ public class LoginFragment extends Fragment {
         mTvForgotPassword.setOnClickListener(view -> showDialog());
     }
 
+    /**
+     * Initialized the container for the values to be shared
+     */
     private void initSharedPreferences() {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
     }
 
+    /**
+     * Method that ensure the field provided is not empty
+     * It will then process the user's input
+     */
     private void login() {
 
         setError();
@@ -116,12 +133,21 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    /**
+     * Method that initialize the error for text input
+     */
     private void setError() {
 
         mTiEmail.setError(null);
         mTiPassword.setError(null);
     }
 
+    /**
+     * Method that process a login data. The method use retrofit and rxjava
+     * and call login method to make a request to the backend
+     * @param email user's email
+     * @param password user's password
+     */
     private void loginProcess(String email, String password) {
 
         mSubscriptions.add(NetworkUtil.getRetrofit(email, password).login()
@@ -130,7 +156,14 @@ public class LoginFragment extends Fragment {
                 .subscribe(this::handleResponse,this::handleError));
     }
 
+    /**
+     * Method that handle the response from the backend.
+     * It will add the users' token and email to shared preference
+     * so it reamins consistent
+     * @param response response from the backend
+     */
     private void handleResponse(Response response) {
+
 
         mProgressBar.setVisibility(View.GONE);
 
@@ -147,6 +180,11 @@ public class LoginFragment extends Fragment {
 
     }
 
+    /**
+     * Method that handles the error. It uses gson builder to
+     * read the json response from the backend and display an error message
+     * @param error the error detected when create a request
+     */
     private void handleError(Throwable error) {
 
         mProgressBar.setVisibility(View.GONE);
@@ -171,6 +209,11 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    /**
+     * Method that gives feedback about an operation. The feedback is shown
+     * at the bottom of the screen.
+     * @param message message to be displayed
+     */
     private void showSnackBarMessage(String message) {
 
         if (getView() != null) {
@@ -179,6 +222,9 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    /**
+     * Method that redirects the user to registration's fragment
+     */
     private void goToRegister(){
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -187,10 +233,12 @@ public class LoginFragment extends Fragment {
         ft.commit();
     }
 
+    /**
+     * Method that show the dialog fragment to reset user's password
+     */
     private void showDialog(){
 
         ResetPasswordDialog fragment = new ResetPasswordDialog();
-
         fragment.show(getFragmentManager(), ResetPasswordDialog.TAG);
     }
 

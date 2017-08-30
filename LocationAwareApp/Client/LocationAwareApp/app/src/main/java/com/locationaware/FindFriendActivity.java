@@ -70,35 +70,13 @@ public class FindFriendActivity extends AppCompatActivity {
         search.setOnClickListener(view -> doFindFriend());
     }
 
+    /**
+     * Method that creates a request to backend to
+     * find a specific user. It uses user's email and
+     * the name user want to search as parameter.
+     */
     private void doFindFriend() {
         f_name = friend.getText().toString();
-
-        /*
-        Call<User> call = svc.getFriends(mEmail,f_name);
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-
-                User resp = response.body();
-                friends = resp;
-
-                *//*countries = new ArrayList<>();
-                countries.add("Australia");
-                countries.add("India");
-                countries.add("United States of America");
-                countries.add("Germany");
-                countries.add("Russia");
-                *//*
-
-                RecyclerView.Adapter adapter = new FindFriendAdapter(friends);
-                recyclerView.setAdapter(adapter);
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Log.d("Error",t.getMessage());
-            }
-        });*/
 
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).getFriends(mEmail,f_name)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -106,6 +84,12 @@ public class FindFriendActivity extends AppCompatActivity {
                 .subscribe(this::handleResponse,this::handleError));
     }
 
+    /**
+     * Method that handles the response.
+     * It will pass the user to the adapter and
+     * the adapter will display user's information
+     * @param user
+     */
     private void handleResponse(User user) {
         friends = user;
         RecyclerView.Adapter adapter = new FindFriendAdapter(friends);

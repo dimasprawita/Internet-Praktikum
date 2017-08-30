@@ -23,6 +23,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
+ * The Adapter for User's Comment.
  * Created by dimasprawita on 27.08.17.
  */
 
@@ -87,6 +88,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         return userCommentList.size();
     }
 
+    /**
+     * ViewHolder class that defines all the elements in the display.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView user_id, user_comment, created_at, total_like, text_Like;
         private Button deleteComment, likeComment;
@@ -104,6 +108,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         }
     }
 
+    /**
+     * Method that allows user to delete the comment.
+     * It creates a request using retrofit interface
+     * and the comment will be deleted from the list of comments.
+     */
     private void doDeleteComment()
     {
         Retrofit retrofit = new Retrofit.Builder()
@@ -134,6 +143,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         });
     }
 
+    /**
+     * Method that allows user to like user's comments
+     * It creates a request using retrofit interface
+     * and update the number of like of the current comment.
+     */
     private void doLikeComment()
     {
         Retrofit retrofit = new Retrofit.Builder()
@@ -156,14 +170,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                         notifyDataSetChanged();
                     }
                 }
-
-
-                //CA = new CommentAdapter(userCommentList);
-                //RecyclerView.Adapter adapter = new CommentAdapter(userCommentList);
-
-                //recyclerView.setAdapter(adapter);
-                //currentLike = response.body().getTotal_like();
-                //Log.d("Response","Total Like"+response.body().toString());
             }
 
             @Override
@@ -175,14 +181,5 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     }
 
 
-
-    /*private void showSnackBarMessage(String message) {
-
-        if (getView() != null) {
-
-            Snackbar.make(getView(),message,Snackbar.LENGTH_SHORT).show();
-        }
-
-    }*/
 
 }

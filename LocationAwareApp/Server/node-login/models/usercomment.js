@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+* The schema for user's comment.
+* It will store the user ID, user's comment
+* the time the comment is created and
+* the number of like for that comment
+*/
+
+
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;

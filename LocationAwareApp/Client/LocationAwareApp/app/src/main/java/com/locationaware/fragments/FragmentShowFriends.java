@@ -55,12 +55,19 @@ public class FragmentShowFriends extends DialogFragment {
         showFriends = (TextView) v.findViewById(R.id.tv_show_friend);
     }
 
+    /**
+     * Method that retreive the data passed to this fragment
+     */
     private void getData() {
         Bundle bundle = getArguments();
         mToken = bundle.getString(Constants.TOKEN);
         mEmail = bundle.getString(Constants.EMAIL);
     }
 
+    /**
+     * Method that create a request to the backedn to load
+     * the all the friends that current user has.
+     */
     private void loadFriends()
     {
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).getFriendList(mEmail)
@@ -69,11 +76,20 @@ public class FragmentShowFriends extends DialogFragment {
                 .subscribe(this::handleResponse,this::handleError));
     }
 
+    /**
+     * MEthod that handle the response and display the user's friends
+     * @param friend friends to display
+     */
     private void handleResponse(Friend friend) {
         //showFriends.setText(friend.getFriend().get(0).toString());
         Log.d("Friends",friend.getFriend().toString());
     }
 
+    /**
+     * Method that handles the error.
+     * The error message will be displayed.
+     * @param error
+     */
     private void handleError(Throwable error) {
 
         //mProgressBar.setVisibility(View.GONE);

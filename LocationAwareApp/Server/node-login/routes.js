@@ -3,6 +3,9 @@
 const auth = require('basic-auth');
 const jwt = require('jsonwebtoken');
 
+const MongoClient = require('mongodb').MongoClient;
+const url = "mongodb://localhost:27017/node-login";
+
 const register = require('./functions/register');
 const login = require('./functions/login');
 const profile = require('./functions/profile');
@@ -13,7 +16,7 @@ const findFr = require('./functions/findFriend')
 const user = require('./models/user');
 const img = require('./models/image');
 const chkIn = require('./functions/checkin');
-const commFun = require('./functions/comment')
+const commFun = require('./functions/comment');
 
 const googleMapsClient = require('@google/maps').createClient({
   key: 'AIzaSyD4msknaxGUuC2ZIA5AVRulS9CCK62Dspo'
@@ -40,8 +43,14 @@ const upload = multer({
 
 module.exports = router => {
 
+	/**
+	* This is route to ensure that the server is running
+	*/
 	router.get('/', (req, res) => res.end('NodeJS server is running successfully !'));
 
+	/**
+	* This is route to authenticate the user login's data (username and password)
+	*/
 	router.post('/authenticate', (req, res) => {
 
 		const credentials = auth(req);
@@ -66,6 +75,10 @@ module.exports = router => {
 		}
 	});
 
+
+	/**
+	* This is route to register a new user
+	*/
 	router.post('/users', (req, res) => {
 
 		const name = req.body.name;
@@ -93,6 +106,10 @@ module.exports = router => {
 		}
 	});
 
+	/**
+	* This is route to get the user's data and 
+	* send it to the front end part
+	*/
 	router.get('/users/:id', (req,res) => {
 
 		if (checkToken(req)) {
@@ -109,6 +126,9 @@ module.exports = router => {
 		}
 	});
 
+	/**
+	* This is route to update user's data. 
+	*/
 	router.put('/users/:id/profile', (req,res) => {
 		
 		const id = req.params.id;
@@ -139,6 +159,9 @@ module.exports = router => {
 
 	});
 
+	/**
+	* This is route to delete the user 
+	*/
 	router.delete('/users/:id', (req,res) => {
 
 		if (checkToken(req)) {
@@ -155,6 +178,9 @@ module.exports = router => {
 		}
 	});
 
+	/**
+	* This is route to change user's password
+	*/
 	router.put('/users/:id', (req,res) => {
 
 		if (checkToken(req)) {
@@ -181,6 +207,9 @@ module.exports = router => {
 		}
 	});
 
+	/**
+	* This is route to reset password. 
+	*/
 	router.post('/users/:id/password', (req,res) => {
 
 		const email = req.params.id;
@@ -205,6 +234,11 @@ module.exports = router => {
 		}
 	});
 
+	/**
+	* This is route to search some specific user. 
+	* A name that a user wants to be searched by user
+	* is attached as query
+	*/
 	router.get('/users/:id/search', (req,res) => {
 
 		if (checkToken(req)) {
@@ -224,33 +258,14 @@ module.exports = router => {
 		}
 	});
 
-	// show friends
-	/*router.get('/users/friends/:id', checkTokenNext, (req, res) => {
-
-		const uID = req.params.id;
-
-		user.find({email:uID})
-
-		.then(results => resolve(results[0]._id))
-
-		.then(objID => req.objID.getFriends(function(err, friends) {
-			if (err){
-				console.log("erro : " , err)
-				return res.status(500).json({ error: err })
-			}
-		    console.log('friends', friends);
-		    return res.status(200).json({ friends: friends })
-		})
-		)
-
-		.catch(err => res.status(err.status).json({ message: err.message }));
-	});*/
-
-	// show friends
+	/**
+	* This is route to get the user's friend
+	* The user's email is used as id
+	*/
 	router.get('/users/friends/:id', checkTokenNext, (req, res) => {
 		req.user.getFriends(function(err, friends) {
 			if (err){
-				console.log("erro : " , err)
+				console.log("error : " , err)
 				return res.status(500).json({ error: err })
 			}
 		    console.log('friends', friends);
@@ -258,51 +273,64 @@ module.exports = router => {
 		})
 	});
 
-	// Send friend request
-	router.post('/users/:id', checkTokenNext, (req,res) => {
+	/**
+	* This is route to send a friend request to specific user
+	* :id is the one who sent the request
+	* :idrequested is the one who will receive the request
+	*/
+	router.post('/users/:id/:idrequested', checkTokenNext, (req,res) => {
 		//const uid = req.params.id;
+		const requester = req.user;
 
-		user.findOne({email : req.params.id}, function(err,result){
+		user.findOne({email : req.params.idrequested}, function(err,result){
 
-			if (!req.params.id) {
+			if (!req.params.idrequested) {
 				res.status(400).json({message: 'Invalid Request !'});
-		} 
-		else 
-		{
+			} 
+			else 
+			{
 				//console.log("everything ok");
-				req.user.friendRequest(result._id, function (err, request) {
+				requester.friendRequest(result._id, function (err, request) {
 			    if (err)
 			    	return res.status(500).json({ error: err })
 			    console.log('request', request);
 			    res.status(200).json({ request: request })				    
 				});
-		};
-			//console.log(wantedUID);
+			};
+
 		});
-		//console.log(wantedUID);
-		//console.log(wantedUID);
-
-
-		//const requester = req.user;
-		//console.log("everythin ok ",user);
 		
 	});
 
-	// accept friend request
-	router.post('/users/:id/requests/accept', checkTokenNext, (req, res) => {
-		const uid = req.params.id;
-		//console.log("something went ",uid);
-		req.user.acceptRequest(uid, function(err, friendship) {
-			if (err){
-				//console.log("erro : " , err)
-				return res.status(500).json({ error: err })
-			}
-		    //console.log('friendship', friendship);
-		    return res.status(200).json({ friendship: friendship })
-		})
-	})
 
-	//deny friend request
+	/**
+	* This is route to accept a friend request to specific user
+	* :id is the user who received the request
+	*/
+	router.post('/users/:id/requests/accept', checkTokenNext, (req, res) => {
+		//const uid = req.params.id;
+		MongoClient.connect(url, function(err, db) {
+  			if (err) throw err;
+  			//const requester = db.collection("userRelationships").findOne({requested:requested}).requester;
+  			const requested = req.user;
+  			db.collection("userRelationships").findOne({requested:requested}, function(err,result){
+  				requested.acceptRequest(result._id, function(err, friendship) {
+				if (err){
+					//console.log("erro : " , err)
+					res.status(500).json({ error: err })
+				}
+				    //console.log('friendship', friendship);
+				    res.status(200).json({ friendship: friendship })
+				    db.close();	
+				})
+  			})
+  		});
+  	});	
+
+	/**
+	* This is route to reject a friend request to specific user
+	* :id is the one who wants to reject the friend request
+	*/
 	router.post('/users/requests/:id/reject', checkToken, (req, res) => {
 		const uid = req.params.id;
 		//console.log("something went ",uid);
@@ -316,15 +344,10 @@ module.exports = router => {
 		})
 	})
 
-
-
-
-
-
-
-
-
-
+	/**
+	* This is route to get the nearby places
+	* @return {response} json response from google place API
+	*/
 	router.get('/places', (req,res) => 	{
 		const t = req.query.type;
 		const ll = req.query.location;
@@ -336,7 +359,6 @@ module.exports = router => {
 		radius: r,
 		}, function(err, response) {
 			if(!err) {
-				//var data = response.json.results;
     			res.send(response.json);
 			}
 			else {
@@ -345,6 +367,11 @@ module.exports = router => {
 		});
 	});
 
+	/**
+	* This is route to get a place detail
+	* :id is the id of current place
+	* @return {response} json response from google place API
+	*/
 	router.get('/places/:id', (req,res) => 	{
 		const placeID = req.params.id;
 
@@ -361,6 +388,11 @@ module.exports = router => {
 		});
 	});	
 
+	/**
+	* This is route to create a check in in current place
+	* :id is the id of current place
+	* @return {response} the succeeded message
+	*/
 	router.post('/places/:id/checkin', (req,res) => {
 		const pid = req.params.id;
 		const uid = req.query.email;
@@ -384,6 +416,11 @@ module.exports = router => {
 
 	});
 
+	/**
+	* This is route to get a check in in one place
+	* :id is the id of current place
+	* @return {number} the number of checkin on the place
+	*/
 	router.get('/places/:id/checkin', (req,res) => {
 		const pid = req.params.id;
 
@@ -401,6 +438,11 @@ module.exports = router => {
 		}
 	});
 
+	/**
+	* This is route to get user's check in in one place
+	* :id is the id of current place
+	* @return {number} the number of user's check in on the place
+	*/
 	router.get('/places/:id/checkin', (req,res) => {
 		const pid = req.params.id;
 		const uid = req.query.email;
@@ -419,6 +461,11 @@ module.exports = router => {
 		}
 	});
 
+	/**
+	* This is route to get comments from users in current place
+	* :id is the id of current place
+	* @return {comment} the comments from all user in current place
+	*/
 	router.get('/places/:id/comments', (req,res) => {
 		const pid = req.params.id;
 
@@ -438,6 +485,11 @@ module.exports = router => {
 
 	});
 
+	/**
+	* This is route to post comment in current place
+	* :id is the id of current place
+	* @return {message} the succeeded message
+	*/
 	router.post('/places/:id/comments', (req,res) => {
 		const pid = req.params.id;
 		const uid = req.query.user;
@@ -461,6 +513,11 @@ module.exports = router => {
 		}
 	});
 
+	/**
+	* This is route to delete a comment in current place
+	* :id is the id of current place
+	* @return {result} the deleted comment
+	*/
 	router.delete('/places/:id/comments', (req,res) => {
 		const pid = req.params.id;
 		const uid = req.query.user;
@@ -482,6 +539,11 @@ module.exports = router => {
 
 	});
 
+	/**
+	* This is route to give rate to a comment
+	* :id is the id of current place
+	* @return {comment} the already rated comment
+	*/
 	router.put('/places/:id/comments', (req,res) => {
 		const pid = req.params.id;
 		const uid = req.query.user;
@@ -543,6 +605,11 @@ module.exports = router => {
 		res.end(image, 'binary')
 	})
 
+	/**
+	* Check the token from the request
+	* to ensure that the request comes from specific user
+	* @param {req} user's request
+	*/
 	function checkToken(req) {
 
 		const token = req.headers['x-access-token'];
@@ -566,6 +633,14 @@ module.exports = router => {
 		}
 	}
 
+	/**
+	* Check the token from the request
+	* to ensure that the request comes from specific user
+	* also set the user's objectID
+	* @param {req} user's request
+	* @param {res} response to user's
+	* @param {next} do next function
+	*/
 	function checkTokenNext(req, res, next) {
 
 			const token = req.headers['x-access-token'];

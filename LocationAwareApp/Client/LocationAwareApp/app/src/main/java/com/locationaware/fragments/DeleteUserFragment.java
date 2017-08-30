@@ -82,6 +82,11 @@ public class DeleteUserFragment extends DialogFragment {
         mBtDelete.setOnClickListener(view -> deleteUser());
     }
 
+    /**
+     * Method that creates request to delete user
+     * After delete the user, we set the user's email and token to
+     * empty.
+     */
     private void deleteUser() {
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).deleteUser(mEmail)
                 .observeOn(AndroidSchedulers.mainThread())

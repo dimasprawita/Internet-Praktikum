@@ -82,11 +82,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     }
 
+    /**
+     * Method that add anything on top of the map
+     * after the map is ready.
+     * @param googleMap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
 
-        //initialize google play service
+        /**
+         * initialize google play service
+         */
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)
@@ -100,6 +107,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             gMap.setMyLocationEnabled(true);
         }
 
+        /**
+         * call the method retro_getnearbyplaces based on the query
+         * user typed in the display.
+         */
         placeText = (EditText) findViewById(R.id.placeText);
         Button btnNearbyPlace = (Button) findViewById(R.id.nearby_place);
         btnNearbyPlace.setOnClickListener(v -> {
@@ -107,9 +118,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             type = placeText.getText().toString();
             retro_getNearbyPlaces(type);
             Toast.makeText(MapActivity.this, "These are the places", Toast.LENGTH_LONG).show();
-
         });
 
+        /**
+         * Provide information everytime a marker is clicked
+         */
         gMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
             @Override
@@ -137,6 +150,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         gMap.setOnInfoWindowClickListener(this);
     }
 
+    /**
+     * Method that directs user to new page that displays
+     * the detail of a current place. It also passess the place ID and
+     * user's email and name to the new activity.
+     * @param marker marker clicked
+     */
     @Override
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(this, "Info window clicked",
@@ -159,6 +178,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     }
 
+    /**
+     * create a connection to google api
+     */
     protected synchronized void buildGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -170,6 +192,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         googleApiClient.connect();
     }
 
+    /**
+     * MEthod that update the current location when changed.
+     * The current position is indicated with blue marker.
+     * The camera will be directed to user's location
+     * @param location
+     */
     @Override
     public void onLocationChanged(Location location) {
         lastLocation = location;
@@ -196,6 +224,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * method that define the parameter for requesting the location
+     * This method is called if the google api calient already connected.
+     * @param bundle
+     */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         locationRequest = new LocationRequest();
@@ -217,6 +250,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     }
 
+    /**
+     * Method that check if the permission in user's device is already activated
+     * This to ensure that the API can access user's location
+     */
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public boolean checkLocationPermission() {
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED) {
@@ -239,13 +276,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * Method that other tasks after permission is granted.
+     * If the persmission is granted then it will build the client side
+     * of the google API in the front end
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted. Do the
-                    // contacts-related task you need to do.
                     if (ContextCompat.checkSelfPermission(this,
                             Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
@@ -266,6 +309,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     }
 
 
+    /**
+     * Method that creates request to get the nearby places
+     * It uses retrofit interface. The response will be assigned to marker
+     * and displayed in the screen.
+     * @param type serach query typed by user
+     */
     private void retro_getNearbyPlaces(String type) {
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -316,20 +365,5 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             }
         });
     }
-
-    /*private void updateMap(Location location) {
-        if(yourMarker == null){
-            yourMarker = gMap.addMarker(
-            new MarkerOptions()
-                    .position(new LatLng(location.getLatitude(),location.getLongitude()))
-                    .title(getString(R.string.markerYourPosition))
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-        }else{
-            yourMarker.setPosition(new LatLng(location.getLatitude(),location.getLongitude()));
-        }
-        gMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),location.getLongitude())));
-    }*/
-
-
 }
 

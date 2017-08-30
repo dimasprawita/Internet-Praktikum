@@ -20,20 +20,23 @@ public class FindFriendAdapter extends RecyclerView.Adapter<FindFriendAdapter.Vi
         this.friend = friend;
     }
 
-
     @Override
     public FindFriendAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_row, parent, false);
         return new ViewHolder(view);
     }
 
+    /**
+     * Update the field with the data received from the response
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(FindFriendAdapter.ViewHolder holder, int position) {
         holder.friend_name.setText(friend.getName());
         holder.friend_mail.setText(friend.getEmail());
-        holder.friend_age.setText(friend.getAge());
+        holder.friend_age.setText(String.valueOf(friend.getAge()));
         holder.friend_city.setText(friend.getCity());
-
         /*holder.friend_name.setText(countries.get(position));
         holder.friend_mail.setText(countries.get(position));*/
     }
@@ -43,6 +46,9 @@ public class FindFriendAdapter extends RecyclerView.Adapter<FindFriendAdapter.Vi
         return 1;
     }
 
+    /**
+     * The class that defines the field used in the display.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView friend_name,friend_mail,friend_age,friend_city;
         public ViewHolder(View view) {

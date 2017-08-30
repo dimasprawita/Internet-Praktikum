@@ -62,8 +62,8 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordDial
 
 
     /**
-     * Display messag upon password reset
-     * @param message
+     * Display message upon password reset
+     * @param message the message to be displayed
      */
     @Override
     public void onPasswordReset(String message) {
@@ -73,8 +73,7 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordDial
 
     /**
      * create a snackbar message and display it in activity
-     * @param message
-     * the message to be displayed
+     * @param message the message to be displayed
      */
     private void showSnackBarMessage(String message) {
 

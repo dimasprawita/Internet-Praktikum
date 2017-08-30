@@ -79,6 +79,12 @@ public class CommentFragment extends Fragment {
         mName = getArguments().getString("Username");
     }
 
+    /** Method that load all comments in current place
+     * IT will create a request to the backend by passing the place's ID
+     * as parameter. The response will show all the comment from users in
+     * current place
+     * @param placeID place to show the comment
+     */
     private void loadPlaceComment(String placeID){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
@@ -107,6 +113,11 @@ public class CommentFragment extends Fragment {
         });
     }
 
+    /**
+     * Method that allows user to create a comment.
+     * It creates a request to backend using retrofit inteface
+     * And after the user posts a comment, the comment will appear in the screen.
+     */
     private void postComment(){
         comment = commentform.getText().toString();
 

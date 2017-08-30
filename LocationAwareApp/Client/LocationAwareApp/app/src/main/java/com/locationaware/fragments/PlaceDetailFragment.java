@@ -63,14 +63,28 @@ public class PlaceDetailFragment extends Fragment {
     private Button checkinBtn;
     private Button addComment;
 
+    /**
+     * Method that create view
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_place_detail,container,false);
 
+        /**
+         * assigned the place id, user's email, and user's name to variables
+         */
         dId = getArguments().getString("Place_ID");
         mEmail = getArguments().getString(Constants.EMAIL);
         mName = getArguments().getString("Username");
+
+        /**
+         * build google api client to establish connection to Google API
+         */
         googleApiClient = new GoogleApiClient
                 .Builder(getActivity())
                 .addApi(LocationServices.API)
@@ -81,6 +95,9 @@ public class PlaceDetailFragment extends Fragment {
 
         initViews(view);
 
+        /**
+         * create object photo task to display places' photo
+         */
         PhotoTask pt = new PhotoTask();
         pt.placePhotosAsync();
 
@@ -89,7 +106,12 @@ public class PlaceDetailFragment extends Fragment {
 
         return view;
     }
-    
+
+
+    /**
+     * Initialize the view
+     * @param v view to initialize
+     */
     private void initViews(View v){
         detailName = (TextView) v.findViewById(R.id.displayName);
         detailAddr = (TextView) v.findViewById(R.id.displayAddr);
@@ -114,8 +136,15 @@ public class PlaceDetailFragment extends Fragment {
     }
 
 
+    /**
+     * Class to query the places' photo from the google API
+     */
     class PhotoTask {
 
+        /**
+         * Method to display the place's photo to the image view
+         *
+         */
         private ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback
                 = new ResultCallback<PlacePhotoResult>() {
             @Override
@@ -128,6 +157,11 @@ public class PlaceDetailFragment extends Fragment {
             }
         };
 
+
+        /**
+         * Query for the photo and do it in the backgorund
+         * The photo is places in the buffer and will retrieve the first photo
+         */
         private void placePhotosAsync() {
             final String placeId = dId;
             Places.GeoDataApi.getPlacePhotos(googleApiClient, placeId)
@@ -150,6 +184,13 @@ public class PlaceDetailFragment extends Fragment {
 
     }
 
+    /**
+     * Method that load the detail of the place
+     * It will make a request to back end using retorfit interface
+     * and parse the response. The response will be assigned to marker that
+     * the user can see in the screen.
+     * @param placeID the id of the current place
+     */
     private void loadPlaceDetail(String placeID) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
@@ -209,6 +250,14 @@ public class PlaceDetailFragment extends Fragment {
         });
     }
 
+    /***
+     * Method that get the number of check and
+     * the number of user's check in in specific place
+     * It will create a request to the backend using retrofit interface
+     * the number of check in will appear if the request and response are successful.
+     * @param placeID id of current place
+     * @param userID id of current user
+     */
     private void getCheckIn(String placeID, String userID){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
@@ -262,6 +311,14 @@ public class PlaceDetailFragment extends Fragment {
     }
 
 
+    /**
+     * Method that allows user to create check in.
+     * It will create a request to the backend using retrofit interface
+     * If the request and response are successful, the number of check in
+     * will increase and user can see the check in in the screen
+     * @param placeID
+     * @param userID
+     */
     private void createCheckIn(String placeID, String userID){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
@@ -296,6 +353,11 @@ public class PlaceDetailFragment extends Fragment {
         });
     }
 
+    /**
+     * Method that directs user to comment fragment
+     * the id of the place, user's ID, and user's name are passed
+     * to the comment fragment
+     */
     private void goToComment()
     {
         FragmentTransaction ft = getFragmentManager().beginTransaction();

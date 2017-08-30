@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+* create a user model and implements the node module
+* friend-of-friends to extend the functionality of
+* user model.
+*/
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 

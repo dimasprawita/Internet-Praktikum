@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+* a model for comment in specific place
+* the schema for thi model will include the schema
+* of user's comment.
+*/
+
 const mongoose = require('mongoose');
 const UserCommentSchema = require('./usercomment')
 
